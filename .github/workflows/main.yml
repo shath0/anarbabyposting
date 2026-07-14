@@ -1,0 +1,25 @@
+name: post
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"   # every 4 hours (UTC)
+  workflow_dispatch:          # lets you run it manually from the Actions tab
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: install deps (no lifecycle scripts)
+        run: npm install --ignore-scripts
+
+      - name: post
+        run: node bot.js
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
